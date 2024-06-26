@@ -1,24 +1,16 @@
-import logging
-import math
+import numpy as np
 
 def sigmoid(x, deriv=False):
     if (deriv):
         return x * (1 - x)
-    return 1 / (1 + math.exp(-x))
+    return 1 / (1 + np.exp(-x))
 
-def dot(inputs, weights):
-    if len(inputs) != len(weights):
-        return -1
+def relu(x, deriv=False):
+    if (deriv):
+        return np.where(x > 0, 1, 0)
+    return np.maximum(0, x)
 
-    sum = 0
-    for i, num in enumerate(inputs):
-        sum += inputs[i] * weights[i]
-    return sum
-
-def mse_loss(y_true, y_pred):
-    if len(y_true) != len(y_pred):
-        return -1
-    sum = 0
-    for i, num in enumerate(y_true):
-        sum += (y_true[i] - y_pred[i]) ** 2
-    return sum/len(y_true)
+def mse_loss(y_true, y_pred, deriv=False):
+    if (deriv):
+        return 2 * (y_pred - y_true) / y_true.size
+    return np.mean((y_true - y_pred) ** 2)
