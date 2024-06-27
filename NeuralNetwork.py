@@ -1,39 +1,33 @@
 import Math
 
-class Neuron:
-    def __init__(self, weights, bias):
-        self.weights = weights
-        self.bias = bias
+class NeuralNetwork:
+    def __init__(self):
+        self.layers = []
 
-    def feedforward(self, inputs):
-        return Math.sigmoid(Math.dot(inputs, self.weights) + self.bias, False)
+    def add_layer(self, layer):
+        self.layers.append(layer)
 
-class ExampleNeuralNetwork:
-    def __init__(self, weights, bias):
-        self.h1 = Neuron(weights, bias)
-        self.h2 = Neuron(weights, bias)
-        self.o1 = Neuron(weights, bias)
-        '''
-        2 Neuron Input Layer
-        2 Neuron Hidden Layer
-        1 Neuron Output Layer
-        '''
+    def forward(self, input_data):
+        output = input_data
+        for layer in self.layers:
+            output = layer.feed_forward(output)
+        return output
 
-    def feedforward(self, x):
-        out_h1 = self.h1.feedforward(x)
-        out_h2 = self.h2.feedforward(x)
+    def backward(self, output_error, learning_rate):
+        for layer in reversed(self.layers):
+            output_error = layer.backward(output_error, learning_rate)
 
-        return self.o1.feedforward([out_h1, out_h2])
-#-------------------
-weights = [0, 1]
-bias = 0
-neuralNet = ExampleNeuralNetwork(weights, bias)
+    def train(self, x_train, y_train, epochs, learning_rate):
+        #How many times do we want to train the model
+        for epoch in range(epochs):
+            #FeedForward input
+            output = self.forward(x_train)
 
-x = [2, 3]
-print(neuralNet.feedforward(x))
-#-------------------
+            #Compute loss (MSE)
+            loss = Math.mse_loss(y_train, output)
+            #Additional Info
+            print(f'Epoch {epoch+1}/{epochs}, Loss: {loss}')
 
-y_true = ([1, 1, 0, 1])
-y_pred = ([0, 0, 0, 0])
-
-print(Math.mse_loss(y_true, y_pred))
+            #Backward propagation
+            output_error = Math.mse_loss(y_train, output, deriv=True)
+            self.backward(output_error, learning_rate)
