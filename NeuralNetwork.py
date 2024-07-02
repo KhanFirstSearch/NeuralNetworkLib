@@ -17,7 +17,7 @@ class NeuralNetwork:
         for layer in reversed(self.layers):
             output_error = layer.backward(output_error, learning_rate)
 
-    def train(self, x_train, y_train, epochs, learning_rate):
+    def train(self, x_train, y_train, epochs, learning_rate, debug=False):
         #How many times do we want to train the model
         for epoch in range(epochs):
             #FeedForward input
@@ -26,7 +26,8 @@ class NeuralNetwork:
             #Compute loss (MSE)
             loss = Math.mse_loss(y_train, output)
             #Additional Info
-            print(f'Epoch {epoch+1}/{epochs}, Loss: {loss}')
+            if (debug):
+                print(f'Epoch {epoch+1}/{epochs}, Loss: {loss}')
 
             #Backward propagation
             output_error = Math.mse_loss(y_train, output, deriv=True)
