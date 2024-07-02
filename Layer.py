@@ -2,7 +2,7 @@ import numpy as np
 import Math
 
 class Layer:
-    def __init__(self, input_size, output_size, activation):
+    def __init__(self, input_size, output_size, activation='relu'):
         #Create random weights and biases
         self.weights = np.random.randn(input_size, output_size) * 0.1
         self.biases = np.zeros((1, output_size))
